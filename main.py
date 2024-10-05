@@ -36,11 +36,10 @@ login_manager.init_app(app)
 class Base(DeclarativeBase):
     pass
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI","DATABASE_URI")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
-
+print(os.getenv('FLASK_KEY'), os.getenv('DATABASE_URI'))
 
 def admin_only(wrapper_function):
     @wraps(wrapper_function)
@@ -143,7 +142,8 @@ def get_all_posts():
 def show_post():
     post_id = request.args.get("post_id")
     requested_post = db.get_or_404(BlogPost, post_id)
-    return render_template("post.html", post=requested_post, year=date.today().year)
+    print(requested_post.author_id, current_user.user_id)
+    return render_template("post.html", post=requested_post, user=current_user, year=date.today().year)
 
 
 @login_required
