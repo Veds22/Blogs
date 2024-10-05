@@ -26,13 +26,12 @@ This will install the packages from the requirements.txt for this project.
 
 app = Flask(__name__)
 ckeditor = CKEditor(app)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = os.environ.get("FLASH_KEY")
 flask_bootstrap.Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 # CREATE DATABASE
-
 
 class Base(DeclarativeBase):
     pass
