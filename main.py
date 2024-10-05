@@ -36,7 +36,7 @@ login_manager.init_app(app)
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "DATABASE_URI")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 print(os.getenv('FLASK_KEY'), os.getenv('DATABASE_URI'))
