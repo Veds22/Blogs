@@ -25,14 +25,25 @@
       <div class="col-md-10 col-lg-8 col-xl-7">
         {{ post.body|safe }}
         {%if post.author_id == user.user_id%}
-        <div class="d-flex justify-content-end mb-4">
+        <div class="d-flex justify-content-center mb-4">
+          <div>
           <a
-            class="btn btn-primary float-right"
+            class="btn btn-primary float-cente mr-2"
             href="{{ url_for('edit_post', post_id=post.id) }}"
             >Edit Post</a
           >
-          {%endif%}
+          </sdiv>
+          <sdiv>
+          <a
+              class="btn btn-primary float-center ml-2"  
+              href="{{ url_for('delete_post', post_id=post.id) }}"
+              >Delete Post</a
+            >
+          </div>
         </div>
+       
+        {%endif%}
+      
       </div>
     </div>
   </div>

@@ -10,6 +10,7 @@ class Post(FlaskForm):
     body = CKEditorField("Body", validators=[DataRequired()])
     submit = SubmitField("Post it")
 
+
 class RegisterForm(FlaskForm):
     email = StringField("E-Mail", validators=[DataRequired()])
     name = StringField("Name", validators=[DataRequired()])
@@ -21,3 +22,5 @@ class LoginForm(FlaskForm):
     email = StringField("E-Mail", validators=[DataRequired(), URL()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Login!")
+    
+    

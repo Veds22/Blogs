@@ -10,6 +10,9 @@ from sqlalchemy import Integer, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegisterForm, LoginForm, Post
+import smtplib
+
+
 
 '''
 Make sure the required packages are installed: 
@@ -24,6 +27,10 @@ pip3 install -r requirements.txt
 This will install the packages from the requirements.txt for this project.
 '''
 
+# SMTP Credentials
+my_email = os.environ.get("EMAIL")
+password = os.environ.get("PASSWORD")
+
 app = Flask(__name__)
 ckeditor = CKEditor(app)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_KEY")
@@ -36,7 +43,7 @@ login_manager.init_app(app)
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "DATABASE_URI")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI","DATABASE_URI")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 print(os.getenv('FLASK_KEY'), os.getenv('DATABASE_URI'))
@@ -142,7 +149,6 @@ def get_all_posts():
 def show_post():
     post_id = request.args.get("post_id")
     requested_post = db.get_or_404(BlogPost, post_id)
-    print(requested_post.author_id, current_user.user_id)
     return render_template("post.html", post=requested_post, user=current_user, year=date.today().year)
 
 
@@ -212,8 +218,26 @@ def logout():
     return redirect(url_for('get_all_posts'))
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        message = request.form["message"]
+        with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+            connection.starttls()
+            connection.login(user=my_email, password=password)
+            connection.sendmail(
+                from_addr=my_email,
+                to_addrs=my_email,
+                msg=f"Subject:Review from {name}\n\nName: {name}\nEmail: {email}\nMessage:\n{message}"
+            )
+            connection.sendmail(
+                from_addr=my_email,
+                to_addrs=email,
+                msg=f"Subject:Review reply\n\nThank uou for your valuable feedback. Will surely connect with you soon to with a positive answer"
+            )
+            return render_template("contact.html", year=date.today().year, msg_sent=True)
     return render_template("contact.html", year=date.today().year)
 
 
